@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web sémentique</title>
+        <meta charset="UTF-8">
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="parser.js"></script>
+        <script src="script.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="fontawesome/css/all.css">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1 id="title">Find the <img src="Treasure.png" width="80"> for your <img src="princess.png" width="80"></h1>
+        <p>In order to marry the princess, king Jakoma needs to find his lost treasure. find it to get his blessing :D</p>
+        <hr>
+        
+        
+        <br>
+
+        <div id="contenu">
+
+        </div>
+        
+        <div id="mydiv">
+
+        </div>
+        <hr>
+        <div class="lastsection">
+        <div id="score">
+                <h2>Score: <span id="scorenumber">0</span></h2>
+                <h2><span id="result"></span><button id="replay" onclick="replay()" hidden>play Again? </button></h2>
+                <audio id="gameover" preload="auto" src ="gameover.mp3">ddd</audio>    
+                <audio id="error" preload="auto" src ="error.wav">ddd</audio>    
+                <audio id="loop"  preload="auto" src ="loop.wav" loop>ddd</audio>    
+                <audio id="win" preload="auto" src ="win.mp3">ddd</audio>    
+    
+        </div>
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="question"></h5>
+                  
+                </div>
+                <div class="modal-body">
+                  <p id="enonce"></p>
+                  <form class="form-horizontal" id="reponses">
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-success">Essayer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <div class="footer">Made with ♥ by THE REST | &copy; 5 TWIN 1</div>
+    </div>
+    </body>
+</html>

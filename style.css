@@ -1,0 +1,77 @@
+
+@font-face {
+    font-family: gamefont;
+    src: url(game.ttf) format('truetype');
+}
+html {
+    height: 100%;
+}
+body{
+    font-family: gamefont;
+    margin: 0 15% 0 15%;
+    background-image: url(background.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+#title{
+    font-size: 4em;
+    margin-top: 0;
+}
+table, th, td {
+    cursor: pointer;
+    border: 2px solid gray;
+}
+table {
+    border-collapse: collapse;
+    background-color: #ffffff99;
+}
+
+td{
+    width: 50px;
+}
+td:hover{
+    background-color: greenyellow;
+}
+.bg {
+    background: lightgreen;
+  }
+
+.red{
+    color: darkred;
+}
+.green{
+    color:  darkblue;
+}
+
+#score{
+    padding: 0 15px 0 15px;
+    width: calc('100% - 10px');
+    display: flex;
+    justify-content: space-between;
+
+}
+.wincolor{
+    background-color: greenyellow
+}
+.losecolor{
+    background-color: darkred;
+}
+#replay{
+    padding: 10px;
+    color: white;
+    background-color: cornflowerblue;
+    border: unset;
+    border-radius: 5px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+.footer{
+    text-align: center;
+    opacity: 0.5;
+    
+}
+.lastsection{
+    background-color: #ffffffBB;
+}

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY spo   "http://www.fil.univ-lille1.fr/~caronc/WS/schema"> 
+   <!ENTITY xsd      "http://www.w3.org/2001/XMLSchema#"> ]>
+<rdf:RDF  
+   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:xsd ="&xsd;" 
+   xmlns:cd="http://www.recshop.fake/cd#"
+   xmlns     ="&spo;#" 
+   xml:base  ="http://www.fil.univ-lille1.fr/~caronc/WS/data" >
+	<Cellule rdf:ID = "caseDepart">
+     <rdfs:label xml:lang="fr">Depart du jeu</rdfs:label>
+     <rdfs:comment>Le joueur démarre le jeu dans cette case</rdfs:comment>
+    </Cellule>
+	<Cellule rdf:ID = "caseDArrivee">
+     <rdfs:label xml:lang="fr">Fin du jeu</rdfs:label>
+     <rdfs:comment>Le joueur atteint cette case en cas de victoire</rdfs:comment>
+    </Cellule>
+	<Cellule rdf:ID = "piege">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:comment>Le joueur sera penalisé s'il atteint cette case</rdfs:comment>
+	 <aPourPenalite rdf:resource="#penalite"/>
+    </Cellule>
+	<Cellule rdf:ID = "Porte">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:comment>L'utilisateur peut continuer son parcours</rdfs:comment>
+    </Cellule>
+	<Cellule rdf:ID = "Tresor">
+     <rdfs:label xml:lang="fr">Tresor</rdfs:label>
+     <rdfs:comment>Le joueur aura un tresor à gagner</rdfs:comment>
+	 <aPourRecompense rdf:resource="#recompense"/>
+    </Cellule>
+	<Cellule rdf:ID = "celluleQuestion">
+     <rdfs:label xml:lang="fr">Cellule question</rdfs:label>
+     <rdfs:comment>Une question dont le joueur doit répondre pour passer à l'étape suivante</rdfs:comment>
+    </Cellule>
+	<Penalite rdf:ID = "penalite">
+	 <rdfs:label xml:lang="fr">Penalité</rdfs:label>
+	 <rdfs:comment>Retour à la case départ</rdfs:comment>
+	</Penalite>
+	<Recompense rdf:ID = "recompense" >
+	 <rdfs:label xml:lang="fr">Recompense</rdfs:label>
+     <rdfs:comment>Augmenter le nombre de vies du joueur</rdfs:comment>
+	 <nbrVies>2</nbrVies>
+	</Recompense>
+	<Question rdf:ID = "question1">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	 <ChoixReponses >
+	 Reponse 1;Reponse 2;Reponse 3
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<Question rdf:ID = "question2">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	 Reponse 1;Reponse 2;Reponse 3
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<Question rdf:ID = "question3">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	 Reponse 1;Reponse 2;Reponse 3
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<Question rdf:ID = "question1">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	 Reponse 1;Reponse 2;Reponse 3
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<Question rdf:ID = "question4">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	 Reponse 1;Reponse 2;Reponse 3
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<ReponseCorrecte rdf:ID = "reponseCorrecte">
+	 <rdfs:label xml:lang="fr">Reponse correcte</rdfs:label>
+	 <rdfs:comment>L'utilisateur termine son chemin</rdfs:comment>
+	</ReponseCorrecte>
+	
+</rdf:RDF>
