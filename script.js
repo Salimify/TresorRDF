@@ -103,6 +103,7 @@ var removeBg = function (el) {
 
 $(function () {
   $(document).on('click', '#mytable td', function (event) {
+    $("#tentative").val(0)
     var row = $(this).closest('td').attr('id')
     row = row.substring(0, 1)
     console.log(row + "aaaa")
@@ -119,30 +120,33 @@ $(function () {
         portes = markPortes();
         console.log(portes.includes(caseId))
         if (portes.includes(caseId)) {
+          $('#question')[0].play()
           $('.modal').modal({ backdrop: 'static', keyboard: false });
           $('.modal').modal('show');
           console.log(questionsArr[qtId])
           $('#enonce').empty()
           $('#reponses').empty()
           $('#question').empty()
-          $('#tentative').empty()
           $('#question').text(questionsArr[qtId].question + "")
           $('#enonce').text(questionsArr[qtId].ennonce + "")
           var res = questionsArr[qtId].reponses.split(";");
           console.log(res);
-          var tentative = 0;
-
+          
           for (i = 0; i < res.length; i++) {
             $('#reponses').append(
               "<input type='radio' value= '" + i + "' name='reponses' /> " + res[i] + "<br>"
             )
           }
+          var tentative = parseInt($("#tentative").val())
           $("input[type='submit']").click(function () {
+            tentative = 1+tentative;
+            console.log(tentative)
             var radioValue = $("input[name='reponses']:checked").val();
             if (radioValue) {
               if (radioValue === questionsArr[qtId].correcte) {
                 markSuccessDoor(caseId);
-                tentative = 0;
+                $("#tentative").empty();
+                $("#tentative").val(0);
                 $('.modal').modal('hide');
                 for (var i = 0; i < 6; i++) {
                   var arr = portesArr[i];
@@ -152,13 +156,13 @@ $(function () {
                     break;
                   }
                 }
+                
                 if(caseId == "4x3"){
                   treasureFound();
                 }
               } else {
                 calculateScore(-10);
-                tentative = tentative + 1;
-                if (tentative == 3) {
+                if ( parseInt($("#tentative").val()) == 3) {
                   $('.modal').modal('hide');
                   endGame(caseId);
                 }
@@ -180,18 +184,19 @@ $(function () {
                 break;
               }
             }
+            $('#fire')[0].play()
             markPiegeDoor(caseId);
 
           } else {
             markNormal(caseId)
             calculateScore(5);
             disabled.push(caseId)
+            $('#error')[0].play()
 
           }
         }
         $(this).closest('td').find('span').removeClass('fa-question')
         $(this).closest('td').addClass('bg')
-        $('#error')[0].play()
       }
 
     }
