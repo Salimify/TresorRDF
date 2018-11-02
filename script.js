@@ -3,28 +3,9 @@ var end = true;
 var questionsArr = [];
 
 //*********** PARSE from RDF ************ */
-
-$(document).ready(function () {
-
-  foafNS = "http://xmlns.com/foaf/0.1/";
-  myRDF = new RDF();
-  myRDF.getRDFURL('projet.rdf', function () {
-    var str = "";
-    for (var i = 1; i < 5; i++) {
-      var triplet = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#question" + i, null, null);
-      var questionArr = [];
-      questionArr["question"] = triplet[1].object;
-      questionArr["ennonce"] = triplet[2].object;
-      questionArr["reponses"] = triplet[5].object;
-      questionArr["correcte"] = triplet[6].object;
-      questionsArr.push(questionArr);
-    }
-    console.log(questionsArr)
-  });
-})
-
 window.onload = function () {
 
+  //************* Create MAtrix */
   var body = document.getElementById('mydiv');
   var tbl = document.createElement('table');
 
@@ -42,31 +23,40 @@ window.onload = function () {
       var td = document.createElement('td');
       td.appendChild(document.createTextNode('\u0020'))
       td.id = i + 'x' + j;
-      if (i === 0 && j === 0) {
-        var myspan = document.createElement('span');
-        myspan.setAttribute("id", "start");
-        myspan.classList.add('fas');
-        myspan.classList.add('fa-home');
-        td.classList.add('bg')
-        td.appendChild(myspan)
-      } else {
-        var myspan = document.createElement('span');
-        myspan.classList.add('fas');
-        myspan.classList.add('fa-question');
-        myspan.style.opacity = '0.2'
-        td.appendChild(myspan)
-      }
-      /*if(i+'x'+j===x[0] || i+'x'+j===x[1]){
-          td.style.border = 'solid'
-          td.style.borderColor = 'red';
-      }*/
       tr.appendChild(td)
     }
     tbdy.appendChild(tr);
   }
   tbl.appendChild(tbdy);
   body.appendChild(tbl)
+
+  //************** RDF SCRIPT ************** */
+  foafNS = "http://xmlns.com/foaf/0.1/";
+  myRDF = new RDF();
+  myRDF.getRDFURL('projet.rdf', function () {
+    /******Case Depart */
+    var tr = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#caseDepart", null, null);
+    var id = tr[1].object + "";
+    createCells(id);
+    createStart(id);
+    /******Get Question from RDF */
+    var str = "";
+    for (var i = 1; i < 5; i++) {
+      var triplet = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#question" + i, null, null);
+      var questionArr = [];
+      questionArr["question"] = triplet[1].object;
+      questionArr["ennonce"] = triplet[2].object;
+      questionArr["reponses"] = triplet[5].object;
+      questionArr["correcte"] = triplet[6].object;
+      questionsArr.push(questionArr);
+    }
+    console.log(questionsArr)
+  });
+
 }
+
+
+
 function addBg(e) {
   var el = $(this);
   el.addClass('bg');
@@ -100,36 +90,40 @@ $(function () {
 
       if ($(this).closest('td').attr('id') == '3x3') {
 
-        console.log(questionsArr[0].question)
-        $('#question').text(questionsArr[0].question+"")
-        $('#enonce').text(questionsArr[0].ennonce+"")
+        $('.modal').modal({ backdrop: 'static', keyboard: false });
+        $('.modal').modal('show');
+        console.log(questionsArr[0])
+        $('#question').text(questionsArr[0].question + "")
+        $('#enonce').empty()
+        $('#enonce').text(questionsArr[0].ennonce + "")
         var res = questionsArr[0].reponses.split(";");
         console.log(res);
-        for(i=0;i<res.length;i++){
-        $('#reponses').append(
-          "<input type='radio' value= '"+res[i]+"' name='reponses' /> "+ res[i] +"<br>"
-        )
-        }
-        $('.modal').modal( {backdrop: 'static', keyboard: false}); 
-        $('.modal').modal('show'); 
-       
-      }
 
-      if ($(this).closest('tr').attr('id') == Math.floor(Math.random() * 20)) {
-        $(this).closest('td').append('<span class="fas fa-bomb"></span>')
-        end = false;
-        $('#result').addClass('red')
-        $('#result').text('Game Over! You lost!!!')
-        $('#mytable').addClass('losecolor');
-        $('#replay').removeAttr('hidden')
-        $('#gameover')[0].play()
-
-      } else {
-        if (!$(this).closest('td').hasClass('bg')) {
-          var current = parseInt($('#scorenumber').text());
-          current = current + 10;
-          $('#scorenumber').text(current)
+        for (i = 0; i < res.length; i++) {
+          $('#reponses').append(
+            "<input type='radio' value= '" + i + "' name='reponses' /> " + res[i] + "<br>"
+          )
         }
+        $("input[type='submit']").click(function () {
+          var radioValue = $("input[name='reponses']:checked").val();
+          if (radioValue) {
+            if (radioValue === questionsArr[0].correcte) {
+              $('.modal').modal('hide');
+            } else {
+              calculateScore(-10);
+              var current = parseInt($('#tentative').text());
+              current = current + 1;
+              if (current == 3) {
+                $('.modal').modal('hide');
+                endGame('3x3');
+              }
+              $('#tentative').text(current).addClass('red')
+            }
+
+          }
+        });
+
+
       }
       $(this).closest('td').find('span').removeClass('fa-question')
       $(this).closest('td').addClass('bg')
@@ -139,10 +133,46 @@ $(function () {
   });
 
 })
+
+function endGame(id) {
+  $('#' + id).append('<span class="fas fa-bomb"></span>')
+  end = false;
+  $('#result').addClass('red')
+  $('#result').text('Game Over! You lost!!!')
+  $('#mytable').addClass('losecolor');
+  $('#replay').removeAttr('hidden')
+  $('#gameover')[0].play()
+
+}
+
+function createStart(id) {
+  console.log(id + "aaaaaaa");
+  $("#" + id).empty()
+  var myspan = document.createElement('span');
+  myspan.setAttribute("id", "start");
+  myspan.classList.add('fas');
+  myspan.classList.add('fa-home');
+  $("#" + id).append(myspan).addClass('bg')
+}
+
+function createCells(id){
+  for(var i=0; i<5; i++){
+    for(var j=0; j<5; j++){
+        td = document.getElementById(i+"x"+j)
+        var myspan = document.createElement('span');
+        myspan.classList.add('fas');
+        myspan.classList.add('fa-question');
+        myspan.style.opacity = '0.2'
+        td.appendChild(myspan)
+    }
+  }
+}
+function calculateScore(number) {
+  var current = parseInt($('#scorenumber').text());
+  current = current + number;
+  $('#scorenumber').text(current)
+}
 function replay() {
   location.reload();
 }
-$(document).ready(function () {
-  $('#loop')[0].play()
-});
 

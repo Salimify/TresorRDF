@@ -10,7 +10,7 @@
    xmlns     ="&spo;#" 
    xml:base  ="http://www.fil.univ-lille1.fr/~caronc/WS/data" >
 	<Cellule rdf:ID = "caseDepart">
-     <rdfs:label xml:lang="fr">Depart du jeu</rdfs:label>
+     <rdfs:label xml:lang="fr">0x0</rdfs:label>
      <rdfs:comment>Le joueur démarre le jeu dans cette case</rdfs:comment>
     </Cellule>
 	<Cellule rdf:ID = "caseDArrivee">
