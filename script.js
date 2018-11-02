@@ -1,10 +1,21 @@
 var x = ['2x2', '2x3']
 var end = true;
+var disabled = [];
 var questionsArr = [];
+var piegesArr = [];
+var portesArr = [];
+var doorOpenedNbr = 0;
+var closedRooms = [
+  { "0": false },
+  { "1": true },
+  { "2": true },
+  { "3": true },
+  { "4": true }
+]
 
 //*********** PARSE from RDF ************ */
 window.onload = function () {
-
+  console.log(closedRooms)
   //************* Create MAtrix */
   var body = document.getElementById('mydiv');
   var tbl = document.createElement('table');
@@ -29,19 +40,40 @@ window.onload = function () {
   }
   tbl.appendChild(tbdy);
   body.appendChild(tbl)
-
+  activeRoom()
   //************** RDF SCRIPT ************** */
   foafNS = "http://xmlns.com/foaf/0.1/";
   myRDF = new RDF();
   myRDF.getRDFURL('projet.rdf', function () {
     /******Case Depart */
-    var tr = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#caseDepart", null, null);
+    var tr = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#start", null, null);
     var id = tr[1].object + "";
     createCells(id);
     createStart(id);
+
+    /****** get piéges */
+    for (var i = 1; i < 8; i++) {
+      var tr2 = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#piege" + i, null, null);
+      var piegeArr = []
+      piegeArr["case"] = tr2[2].object
+      piegeArr["penalite"] = tr2[3].object
+      piegesArr.push(piegeArr)
+    }
+    markPieges()
+    /***** get portes */
+
+    for (var i = 1; i < 7; i++) {
+      var tr2 = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#Porte" + i, null, null);
+      var porteArr = []
+      porteArr["case"] = tr2[2].object
+      porteArr["recompense"] = tr2[3].object
+      portesArr.push(porteArr)
+    }
+    console.log(portesArr)
+    markPortes()
     /******Get Question from RDF */
     var str = "";
-    for (var i = 1; i < 5; i++) {
+    for (var i = 1; i < 7; i++) {
       var triplet = myRDF.Match(null, "http://www.fil.univ-lille1.fr/~caronc/WS/data#question" + i, null, null);
       var questionArr = [];
       questionArr["question"] = triplet[1].object;
@@ -71,63 +103,96 @@ var removeBg = function (el) {
 
 $(function () {
   $(document).on('click', '#mytable td', function (event) {
-    console.log($(this));
+    var row = $(this).closest('td').attr('id')
+    row = row.substring(0, 1)
+    console.log(row + "aaaa")
     $('#loop')[0].play()
-
+    activeRoom()
+    disabled.push("4x4")
+    disabled.push("0x0")
     //alert($(this).closest('td').attr('id'));
     if (end == true) {
+      var qtId = parseInt(row);
+      var caseId = $(this).closest('td').attr('id');
+      if (!disabled.includes(caseId) && closedRooms[row][row] == false) {
+        console.log(caseId)
+        portes = markPortes();
+        console.log(portes.includes(caseId))
+        if (portes.includes(caseId)) {
+          $('.modal').modal({ backdrop: 'static', keyboard: false });
+          $('.modal').modal('show');
+          console.log(questionsArr[qtId])
+          $('#enonce').empty()
+          $('#reponses').empty()
+          $('#question').empty()
+          $('#tentative').empty()
+          $('#question').text(questionsArr[qtId].question + "")
+          $('#enonce').text(questionsArr[qtId].ennonce + "")
+          var res = questionsArr[qtId].reponses.split(";");
+          console.log(res);
+          var tentative = 0;
 
-      if ($(this).closest('td').attr('id') == '4x4') {
-        $(this).closest('td').append('<span class="fas fa-gift"></span>')
-        end = false;
-        $('#result').addClass('green')
-        $('#result').text('Congrats!! YOU Won!!!!!!!!!')
-        $('#loop')[0].pause();
-        $('#win')[0].play()
-        $('#mytable').addClass('wincolor');
-        $('#replay').removeAttr('hidden')
-      }
-
-      if ($(this).closest('td').attr('id') == '3x3') {
-
-        $('.modal').modal({ backdrop: 'static', keyboard: false });
-        $('.modal').modal('show');
-        console.log(questionsArr[0])
-        $('#question').text(questionsArr[0].question + "")
-        $('#enonce').empty()
-        $('#enonce').text(questionsArr[0].ennonce + "")
-        var res = questionsArr[0].reponses.split(";");
-        console.log(res);
-
-        for (i = 0; i < res.length; i++) {
-          $('#reponses').append(
-            "<input type='radio' value= '" + i + "' name='reponses' /> " + res[i] + "<br>"
-          )
-        }
-        $("input[type='submit']").click(function () {
-          var radioValue = $("input[name='reponses']:checked").val();
-          if (radioValue) {
-            if (radioValue === questionsArr[0].correcte) {
-              $('.modal').modal('hide');
-            } else {
-              calculateScore(-10);
-              var current = parseInt($('#tentative').text());
-              current = current + 1;
-              if (current == 3) {
+          for (i = 0; i < res.length; i++) {
+            $('#reponses').append(
+              "<input type='radio' value= '" + i + "' name='reponses' /> " + res[i] + "<br>"
+            )
+          }
+          $("input[type='submit']").click(function () {
+            var radioValue = $("input[name='reponses']:checked").val();
+            if (radioValue) {
+              if (radioValue === questionsArr[qtId].correcte) {
+                markSuccessDoor(caseId);
+                tentative = 0;
                 $('.modal').modal('hide');
-                endGame('3x3');
+                for (var i = 0; i < 6; i++) {
+                  var arr = portesArr[i];
+                  if (arr.case == caseId) {
+                    calculateScore(arr.recompense)
+                    disabled.push(caseId)
+                    break;
+                  }
+                }
+                if(caseId == "4x3"){
+                  treasureFound();
+                }
+              } else {
+                calculateScore(-10);
+                tentative = tentative + 1;
+                if (tentative == 3) {
+                  $('.modal').modal('hide');
+                  endGame(caseId);
+                }
+                $('#tentative').text(tentative).addClass('red')
               }
-              $('#tentative').text(current).addClass('red')
+
             }
+          });
+
+
+        } else {
+          pieges = markPieges()
+          if (pieges.includes(caseId)) {
+            for (var i = 0; i < 6; i++) {
+              var arr = piegesArr[i];
+              if (arr.case == caseId) {
+                calculateScore(arr.penalite)
+                disabled.push(caseId)
+                break;
+              }
+            }
+            markPiegeDoor(caseId);
+
+          } else {
+            markNormal(caseId)
+            calculateScore(5);
+            disabled.push(caseId)
 
           }
-        });
-
-
+        }
+        $(this).closest('td').find('span').removeClass('fa-question')
+        $(this).closest('td').addClass('bg')
+        $('#error')[0].play()
       }
-      $(this).closest('td').find('span').removeClass('fa-question')
-      $(this).closest('td').addClass('bg')
-      $('#error')[0].play()
 
     }
   });
@@ -135,6 +200,7 @@ $(function () {
 })
 
 function endGame(id) {
+  $("#" + id).empty()
   $('#' + id).append('<span class="fas fa-bomb"></span>')
   end = false;
   $('#result').addClass('red')
@@ -145,6 +211,16 @@ function endGame(id) {
 
 }
 
+function activeRoom() {
+  console.log("******active")
+  for (var i = 0; i < 5; i++) {
+    if (closedRooms[i][i] == false) {
+      for (var j = 0; j < 5; j++) {
+        $("#" + i + "x" + j).addClass("active")
+      }
+    }
+  }
+}
 function createStart(id) {
   console.log(id + "aaaaaaa");
   $("#" + id).empty()
@@ -155,21 +231,72 @@ function createStart(id) {
   $("#" + id).append(myspan).addClass('bg')
 }
 
-function createCells(id){
-  for(var i=0; i<5; i++){
-    for(var j=0; j<5; j++){
-        td = document.getElementById(i+"x"+j)
-        var myspan = document.createElement('span');
-        myspan.classList.add('fas');
-        myspan.classList.add('fa-question');
-        myspan.style.opacity = '0.2'
-        td.appendChild(myspan)
+function markPieges() {
+  var cases = []
+  for (var i = 0; i < 7; i++) {
+    cases.push(piegesArr[i].case)
+  }
+  return cases
+
+}
+
+function markPortes() {
+  var portes = []
+  for (var i = 0; i < 6; i++) {
+    portes.push(portesArr[i].case)
+  }
+  return portes;
+
+}
+
+function markSuccessDoor(id) {
+  $("#" + id).empty()
+  $("#" + id).append('<i class="fas fa-door-open"></i>')
+  var srow = parseInt(id.substring(0, 1));
+  if ((srow + 1) < 5) {
+    closedRooms[srow + 1][srow + 1] = false;
+  }
+  activeRoom()
+  console.log(closedRooms)
+}
+
+function markPiegeDoor(id) {
+  $("#" + id).append('<i class="fas fa-skull-crossbones"></i>')
+  $("#" + id).addClass('danger')
+}
+
+function markNormal(id) {
+  $("#" + id).append('<i class="fas fa-smile-beam"></i>')
+  $("#" + id).addClass('normal')
+}
+
+function createCells(id) {
+  for (var i = 0; i < 5; i++) {
+    for (var j = 0; j < 5; j++) {
+      td = document.getElementById(i + "x" + j)
+      var myspan = document.createElement('span');
+      myspan.classList.add('fas');
+      myspan.classList.add('fa-question');
+      myspan.style.opacity = '0.2'
+      td.appendChild(myspan)
     }
   }
 }
+
+function treasureFound(){
+  $("#4x4").empty()
+  $("#4x4").append('<span class="fas fa-gift"></span>')
+  end = false;
+  $('#result').addClass('green')
+  $('#result').text('Congrats!! YOU Won!!!!!!!!!')
+  $('#loop')[0].pause();
+  $('#win')[0].play()
+  $('#mytable').addClass('wincolor');
+  $('#replay').removeAttr('hidden')
+}
 function calculateScore(number) {
   var current = parseInt($('#scorenumber').text());
-  current = current + number;
+  current = current + parseInt(number);
   $('#scorenumber').text(current)
 }
 function replay() {

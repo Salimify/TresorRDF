@@ -9,32 +9,99 @@
    xmlns:cd="http://www.recshop.fake/cd#"
    xmlns     ="&spo;#" 
    xml:base  ="http://www.fil.univ-lille1.fr/~caronc/WS/data" >
-	<Cellule rdf:ID = "caseDepart">
-     <rdfs:label xml:lang="fr">0x0</rdfs:label>
-     <rdfs:comment>Le joueur démarre le jeu dans cette case</rdfs:comment>
+	
+	<Cellule rdf:ID = "start">
+     <rdfs:label>0x0</rdfs:label>
+     <rdfs:comment xml:lang="fr">Le joueur démarre le jeu dans cette case</rdfs:comment>
     </Cellule>
 	<Cellule rdf:ID = "caseDArrivee">
-     <rdfs:label xml:lang="fr">Fin du jeu</rdfs:label>
-     <rdfs:comment>Le joueur atteint cette case en cas de victoire</rdfs:comment>
+     <rdfs:label>3x3</rdfs:label>
+     <rdfs:comment xml:lang="fr">Le joueur atteint cette case en cas de victoire</rdfs:comment>
     </Cellule>
-	<Cellule rdf:ID = "piege">
+	
+	<!-- Piéges -->
+	<Cellule rdf:ID = "piege1">
      <rdfs:label xml:lang="fr">Piege</rdfs:label>
-     <rdfs:comment>Le joueur sera penalisé s'il atteint cette case</rdfs:comment>
-	 <aPourPenalite rdf:resource="#penalite"/>
+     <rdfs:case>0x2</rdfs:case>
+	<rdfs:penalite>-4</rdfs:penalite>
     </Cellule>
-	<Cellule rdf:ID = "Porte">
+	<Cellule rdf:ID = "piege2">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>1x0</rdfs:case>
+	<rdfs:penalite>-2</rdfs:penalite>
+    </Cellule>
+	<Cellule rdf:ID = "piege3">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>1x3</rdfs:case>
+	<rdfs:penalite>-10</rdfs:penalite>
+    </Cellule>
+	<Cellule rdf:ID = "piege4">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>2x1</rdfs:case>
+	<rdfs:penalite>-7</rdfs:penalite>
+    </Cellule>
+	<Cellule rdf:ID = "piege5">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>3x0</rdfs:case>
+	<rdfs:penalite>-8</rdfs:penalite>
+    </Cellule>
+	<Cellule rdf:ID = "piege6">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>4x2</rdfs:case>
+	<rdfs:penalite>-1</rdfs:penalite>
+    </Cellule>
+	<Cellule rdf:ID = "piege7">
+     <rdfs:label xml:lang="fr">Piege</rdfs:label>
+     <rdfs:case>3x3</rdfs:case>
+	<rdfs:penalite>-5</rdfs:penalite>
+    </Cellule>
+    <!-- Portes -->
+	<Cellule rdf:ID = "Porte1">
      <rdfs:label xml:lang="fr">Porte</rdfs:label>
-     <rdfs:comment>L'utilisateur peut continuer son parcours</rdfs:comment>
+     <rdfs:case>0x3</rdfs:case>
+	 <rdfs:recompense>10</rdfs:recompense>
     </Cellule>
+	<Cellule rdf:ID = "Porte2">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:case>1x2</rdfs:case>
+	 <rdfs:recompense>20</rdfs:recompense>
+    </Cellule>
+	<Cellule rdf:ID = "Porte3">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:case>2x0</rdfs:case>
+	 <rdfs:recompense>30</rdfs:recompense>
+    </Cellule>
+	<Cellule rdf:ID = "Porte4">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:case>3x1</rdfs:case>
+	 <rdfs:recompense>40</rdfs:recompense>
+    </Cellule>
+	<Cellule rdf:ID = "Porte5">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:case>4x0</rdfs:case>
+	 <rdfs:recompense>50</rdfs:recompense>
+    </Cellule>
+	<Cellule rdf:ID = "Porte6">
+     <rdfs:label xml:lang="fr">Porte</rdfs:label>
+     <rdfs:case>4x3</rdfs:case>
+	 <rdfs:recompense>60</rdfs:recompense>
+    </Cellule>
+	
+
+
+
+	
 	<Cellule rdf:ID = "Tresor">
      <rdfs:label xml:lang="fr">Tresor</rdfs:label>
      <rdfs:comment>Le joueur aura un tresor à gagner</rdfs:comment>
 	 <aPourRecompense rdf:resource="#recompense"/>
     </Cellule>
+
 	<Cellule rdf:ID = "celluleQuestion">
      <rdfs:label xml:lang="fr">Cellule question</rdfs:label>
      <rdfs:comment>Une question dont le joueur doit répondre pour passer à l'étape suivante</rdfs:comment>
     </Cellule>
+<!--
 	<Penalite rdf:ID = "penalite">
 	 <rdfs:label xml:lang="fr">Penalité</rdfs:label>
 	 <rdfs:comment>Retour à la case départ</rdfs:comment>
@@ -44,53 +111,64 @@
      <rdfs:comment>Augmenter le nombre de vies du joueur</rdfs:comment>
 	 <nbrVies>2</nbrVies>
 	</Recompense>
+	-->
 	<Question rdf:ID = "question1">
 	 <rdfs:label xml:lang="fr">Question</rdfs:label>
-	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <rdfs:comment>Quelle période de la journée se situe avant midi ?</rdfs:comment>
 	 <nbTentatives>3</nbTentatives>
 	 <CasEchec rdf:resource="#penalite"/>
 	 <ChoixReponses >
-	 Reponse 1;Reponse 2;Reponse 3
+		Matin;Après-midi;Soir;Nuit
 	 </ChoixReponses>
-	 <correcte>2</correcte>
+	 <correcte>0</correcte>
 	</Question>
 	<Question rdf:ID = "question2">
 	 <rdfs:label xml:lang="fr">Question</rdfs:label>
-	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <rdfs:comment>Sur quel continent se situe la liechtenstein ?</rdfs:comment>
 	 <nbTentatives>3</nbTentatives>
 	 <CasEchec rdf:resource="#penalite"/>
 	  <ChoixReponses >
-	 Reponse 1;Reponse 2;Reponse 3
+	   Asie;Afrique;Amérique;Antarctique;Europe
 	 </ChoixReponses>
-	 <correcte>2</correcte>
+	 <correcte>4</correcte>
 	</Question>
 	<Question rdf:ID = "question3">
 	 <rdfs:label xml:lang="fr">Question</rdfs:label>
-	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <rdfs:comment>Continuez à conjuguer le verbe être : je suis, tu ...</rdfs:comment>
 	 <nbTentatives>3</nbTentatives>
 	 <CasEchec rdf:resource="#penalite"/>
 	  <ChoixReponses >
-	 Reponse 1;Reponse 2;Reponse 3
+	 	Es;Est;Sommes;Etes;Sont
 	 </ChoixReponses>
-	 <correcte>2</correcte>
-	</Question>
-	<Question rdf:ID = "question1">
-	 <rdfs:label xml:lang="fr">Question</rdfs:label>
-	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
-	 <nbTentatives>3</nbTentatives>
-	 <CasEchec rdf:resource="#penalite"/>
-	  <ChoixReponses >
-	 Reponse 1;Reponse 2;Reponse 3
-	 </ChoixReponses>
-	 <correcte>2</correcte>
+	 <correcte>0</correcte>
 	</Question>
 	<Question rdf:ID = "question4">
 	 <rdfs:label xml:lang="fr">Question</rdfs:label>
-	 <rdfs:comment>L'énoncé de la question</rdfs:comment>
+	 <rdfs:comment>Quelle est la capitale de la Biélorussie ?</rdfs:comment>
 	 <nbTentatives>3</nbTentatives>
 	 <CasEchec rdf:resource="#penalite"/>
 	  <ChoixReponses >
-	 Reponse 1;Reponse 2;Reponse 3
+	  Kiev;Volga;Minsk;St Petersbourg
+	 </ChoixReponses>
+	 <correcte>2</correcte>
+	</Question>
+	<Question rdf:ID = "question5">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>Combien l'être humain a-t-il de doigts en tout ? (Attention)</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	  5;10;15;20
+	 </ChoixReponses>
+	 <correcte>3</correcte>
+	</Question>
+	<Question rdf:ID = "question6">
+	 <rdfs:label xml:lang="fr">Question</rdfs:label>
+	 <rdfs:comment>Si jeudi est le 15 mars, quelle sera la date de jeudi prochain ?</rdfs:comment>
+	 <nbTentatives>3</nbTentatives>
+	 <CasEchec rdf:resource="#penalite"/>
+	  <ChoixReponses >
+	 15 mars;20 mars;22 mars;15 avril;22 avril
 	 </ChoixReponses>
 	 <correcte>2</correcte>
 	</Question>
